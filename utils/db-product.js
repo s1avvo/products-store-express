@@ -12,12 +12,17 @@ class DbProduct {
   }
 
   async _load () {
-    // this._data = JSON.parse(await readFile(this.dbFileName, 'utf8'));
-    this._data = JSON.parse(await readFile(this.dbFileName, 'utf8')).map(obj => new ProductRecords(obj));
+    try {
+      this._data = JSON.parse(await readFile(this.dbFileName, 'utf8')).map(obj => new ProductRecords(obj));
+    } catch (e){
+      if (e.code === 'ENOENT') {
+        this._data = [];
+      }
+    }
   }
 
   _save () {
-    writeFile(this.dbFileName, JSON.stringify(this._data), 'utf8');
+    writeFile(this.dbFileName, JSON.stringify(this._data), "utf8");
   }
 
   createProduct (obj) { //nie musimy czac na zapis do pliku dlatego pomijamy async/await

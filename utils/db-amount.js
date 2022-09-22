@@ -5,15 +5,21 @@ const { ProductRecords } = require('../records/product-records')
 
 class Amount {
   constructor (dbFileName) {
-    this.dbFileName = join(__dirname, '../data', dbFileName);
+    this.dbFileName = join(__dirname, '../data', dbFileName) ;
     this._load();
   }
   async _load () {
-    this._amount = JSON.parse(await readFile(this.dbFileName, 'utf8')).map(obj => new AmountRecords(obj));
+    try {
+      this._amount = JSON.parse(await readFile(this.dbFileName, 'utf8')).map(obj => new AmountRecords(obj));
+    } catch (e){
+      if (e.code === 'ENOENT') {
+        this._amount = [];
+      }
+    }
   }
 
   _save () {
-    writeFile(this.dbFileName, JSON.stringify(this._amount), 'utf8');
+    writeFile(this.dbFileName, JSON.stringify(this._amount),"utf8");
   }
 
   createDetail (obj) {
