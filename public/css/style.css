@@ -1,0 +1,147 @@
+body {
+    font: 14px 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    background: #f5f5f5;
+    color: #4d4d4d;
+    min-width: 230px;
+    margin: 0 auto;
+    font-weight: 300;
+}
+
+.hidden {
+    display: none;
+}
+
+.wrapper {
+    width: 90%;
+    margin: 20px auto;
+}
+
+.right {
+    text-align: right;
+    margin-right: 1em;
+}
+
+.left {
+    text-align: left;
+    margin-left: 1em;
+}
+
+.detail-filter-form {
+    display: inline-block;
+}
+
+table  {
+    width: 100%;
+    margin: 5px auto;
+}
+
+.left-side-form {
+    width: 20%;
+    min-width: 300px;
+    /*background: #d0d0d0;*/
+    border-right: 2px solid #d0d0d0;
+}
+
+.left-side-form input, .left-side-form select {
+    margin: 8px 0;
+}
+
+button {
+    display: inline-block;
+}
+
+table.list {
+    text-align: center;
+    width: 100%;
+    table-layout: fixed;
+}
+
+table td {
+    text-align: left;
+    vertical-align: top;
+    padding: 5px 10px;
+    width: 100%;
+    overflow: hidden;
+}
+
+table td:nth-child(3), table td:nth-child(4), table td:nth-child(5), table td:nth-child(6) {
+    text-align: center;
+}
+
+.product-list col:nth-child(1), .product-list col:nth-child(2){
+    max-width: 30%;
+}
+
+.product-list col:nth-child(3), .product-list col:nth-child(4){
+    width: 75px;
+}
+
+.product-list col:nth-child(5) {
+    width: 125px;
+}
+
+.product-list col:nth-child(6) {
+    width: 220px;
+}
+
+
+.detail-list col:nth-child(1) {
+    width: 50px;
+}
+
+.detail-list col:nth-child(2) {
+    width: 30%;
+}
+
+.detail-list col:nth-child(3){
+    width: 75px;
+}
+
+
+/*.list th:nth-child(4){*/
+/*    width: 50px;*/
+/*}*/
+
+thead > tr {
+    background-color: #b0b0b0;
+}
+
+tr:nth-child(even){
+    background-color: #e5e5e5;
+}
+
+input[type="text"] {
+    width: 90%;
+    padding: 5px;
+    margin: 5px;
+}
+
+input[type="submit"], input[type="reset"] {
+    background: #eeeeee;
+    padding: 6px 12px;
+    margin: 15px 0 10px;
+    display: inline-block;
+    border: none;
+    border-radius: 30px;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+input[type="submit"]:hover, input[type="reset"]:hover {
+    background: #939292;
+}
+
+.detail-note, .head-detail-product {
+    display: inline-block;
+    vertical-align: top;
+}
+
+ul {
+    margin: 5px;
+    padding: 0;
+    list-style: none;
+}
+
+li {
+    margin: 10px 0;
+}
