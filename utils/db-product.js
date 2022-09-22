@@ -4,7 +4,6 @@ const { v4: uuid } = require('uuid');
 const { ProductRecords } = require('../records/product-records');
 const { amount } = require('./db-amount')
 
-
 class DbProduct {
   constructor (dbFileName) {
     this.dbFileName = join(__dirname, '../data', dbFileName);
