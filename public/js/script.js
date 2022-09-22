@@ -115,16 +115,6 @@ const filterData = async (e) => {
 detailFilter.addEventListener('submit', filterData, false)
 detailFilter.addEventListener('reset', filterData, false)
 
-// // Retrieve the data
-// function readFormData() {
-//   products["productName"] = document.getElementById("productName").value;
-//   products["productSecondName"] = document.getElementById("productSecondName").value;
-//   products["productAmount"] = document.getElementById("productAmount").value;
-//   products["productUnit"] = document.getElementById("productUnit").value;
-//   products["productPlace"] = document.getElementById("productPlace").value;
-//   return {product: products};
-// }
-
 //Insert products list
 const insertProductsList = (data) => {
 
