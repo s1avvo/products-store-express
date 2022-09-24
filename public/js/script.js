@@ -60,8 +60,6 @@ sortSelectList.addEventListener('click', sortProductList);
 const sortDetailList = (e) => {
   event.preventDefault();
 
-  console.log(details)
-
   if(e.target.value === '1'){
     const sorted = details.map(element => element.productDetail).sort((a, b) => a.data > b.data ? -1 : 1);
     insertProductDetail(sorted);
@@ -181,7 +179,6 @@ const onEdit = (td) => {
   selectedRow = td.parentElement.parentElement;
   document.getElementById("productName").value = selectedRow.cells[0].innerHTML;
   document.getElementById("productSecondName").value = selectedRow.cells[1].innerHTML;
-  // document.getElementById("productAmount").value = selectedRow.cells[2].innerHTML;
   document.getElementById("productUnit").value = selectedRow.cells[3].innerHTML;
   document.getElementById("productPlace").value = selectedRow.cells[4].innerHTML;
 }

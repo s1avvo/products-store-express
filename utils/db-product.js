@@ -1,27 +1,52 @@
-const { readFile, writeFile } = require('fs').promises;
-const { join } = require('path');
 const { v4: uuid } = require('uuid');
 const { ProductRecords } = require('../records/product-records');
-const { amount } = require('./db-amount')
+const { s3, bucketName } = require("./aws-s3");
+
 
 class DbProduct {
   constructor (dbFileName) {
-    this.dbFileName = join(__dirname, '../data', dbFileName);
+    // this.dbFileName = join('https://products-store-express-trial.s3.eu-central-1.amazonaws.com/', dbFileName);
+    this.dbFileName = dbFileName;
     this._load(); // dlatego tak ze w konstruktorze nie da sie dac async/await
   }
 
   async _load () {
+    // try {
+    //   this._data = JSON.parse(await readFile(this.dbFileName, 'utf8')).map(obj => new ProductRecords(obj));
+    // } catch (e){
+    //   if (e.code === 'ENOENT') {
+    //     this._data = [];
+    //   }
+    // }
     try {
-      this._data = JSON.parse(await readFile(this.dbFileName, 'utf8')).map(obj => new ProductRecords(obj));
-    } catch (e){
-      if (e.code === 'ENOENT') {
-        this._data = [];
-      }
-    }
+      const params = {
+        Bucket: bucketName,
+        Key: "product.json"
+      };
+
+      const theObject = await s3.getObject(params).promise();
+      const body = Buffer.from(theObject.Body)
+      this._data = JSON.parse(body).map(obj => new ProductRecords(obj));
+
+    } catch (err) {
+      console.log(err);
+    };
   }
 
-  _save () {
-    writeFile(this.dbFileName, JSON.stringify(this._data), "utf8");
+  async _save () {
+    // writeFile(this.dbFileName, JSON.stringify(this._data), "utf8");
+    try {
+      const params = {
+        Bucket: bucketName,
+        Key: 'product.json',
+        Body: JSON.stringify(this._data),
+      };
+
+      await s3.putObject(params).promise();
+
+    } catch (err) {
+      console.log("Error uploading data: ", err);
+    }
   }
 
   createProduct (obj) { //nie musimy czac na zapis do pliku dlatego pomijamy async/await
