@@ -2,11 +2,13 @@ const getAddProductFrom = document.getElementById('addProductForm');
 const getAddDetailFrom = document.getElementById('addDetailForm');
 const productTable = document.getElementById("productList").getElementsByTagName('tbody')[0];
 const detailTable = document.getElementById("detailList").getElementsByTagName('tbody')[0];
-const headDetail = document.querySelector('.head-detail-product').getElementsByTagName('li');
-const sortSelectList = document.querySelector('.product-sort');
-const searchInput = document.querySelector('.search-product');
-const detailFilter = document.querySelector('.detail-filter-form');
-const sortSelectDetail = document.querySelector('.detail-sort');
+const headDetail = document.querySelector('#headDetailProduct').getElementsByTagName('li');
+const sortSelectList = document.querySelector('#productSort');
+const searchInput = document.querySelector('#productSearch');
+const detailFilter = document.querySelector('#detailFilterForm');
+const sortSelectDetail = document.querySelector('#detailSort');
+const detailHeader = document.querySelector('.detail-header');
+const detailMain = document.querySelector('.detail-main');
 
 let selectedRow = null;
 let products = [];
@@ -15,14 +17,6 @@ let detailsForFilter = [];
 let filterRangeDetails = [];
 let detailId;
 let countDetailAmount = 0;
-
-const printProductsList = () => {
-  const toPrint = document.getElementById("productList");
-  let newWindow= window.open("");
-  newWindow.document.write(toPrint.outerHTML);
-  newWindow.print();
-  newWindow.close();
-}
 
 const sortProductList = (event) => {
   event.preventDefault();
@@ -121,21 +115,24 @@ const insertProductsList = (data) => {
   products = data.map(element => {
     const newRow = productTable.insertRow(productTable.length);
     newRow.id = element.id;
-    let cell1 = newRow.insertCell(0)
+    let cell1 = newRow.insertCell(0);
     cell1.innerText = element.name;
-    let cell2 = newRow.insertCell(1)
+    let cell2 = newRow.insertCell(1);
+    cell2.classList.add('hiddenColumn');
     cell2.innerText = element.secondName;
-    let cell3 = newRow.insertCell(2)
+    let cell3 = newRow.insertCell(2);
     cell3.innerText = element.amount;
-    let cell4 = newRow.insertCell(3)
+    let cell4 = newRow.insertCell(3);
     cell4.innerText = element.unit;
-    let cell5 = newRow.insertCell(4)
+    let cell5 = newRow.insertCell(4);
+    cell5.classList.add('hiddenColumn');
     cell5.innerText = element.place;
-    let cell6 = newRow.insertCell(5)
+    let cell6 = newRow.insertCell(5);
+    cell6.classList.add('text-center');
     cell6.innerHTML = `
-        <button onClick="onEdit(this)">Edytuj</button>
-        <button onClick="onDetail(this)">Szczegóły</button>
-        <button onClick="onDelete(this)">X</button>
+        <button type="button" class="btn btn-outline-secondary btn-sm d-block d-sm-inline" onClick="onEdit(this)">Edytuj</button>
+        <button type="button" class="btn btn-outline-secondary btn-sm d-block d-sm-inline" onClick="onDetail(this)">Więcej</button>
+        <button type="button" class="btn btn-outline-secondary btn-sm d-block d-sm-inline" onClick="onDelete(this)">X</button>
     `;
 
     return {product: element, label: newRow}
@@ -177,15 +174,15 @@ const insertProductDetail = (data) => {
 //Edit the data
 const onEdit = (td) => {
   selectedRow = td.parentElement.parentElement;
-  document.getElementById("productName").value = selectedRow.cells[0].innerHTML;
-  document.getElementById("productSecondName").value = selectedRow.cells[1].innerHTML;
-  document.getElementById("productUnit").value = selectedRow.cells[3].innerHTML;
-  document.getElementById("productPlace").value = selectedRow.cells[4].innerHTML;
+  getAddProductFrom.querySelector('input[name="productName"]').value = selectedRow.cells[0].innerHTML;
+  getAddProductFrom.querySelector('input[name="productSecondName"]').value = selectedRow.cells[1].innerHTML;
+  getAddProductFrom.querySelector('select[name="productUnit"]').value = selectedRow.cells[3].innerHTML;
+  getAddProductFrom.querySelector('input[name="productPlace"]').value = selectedRow.cells[4].innerHTML;
 }
 
 const updateRecord = async (formData) => {
   try {
-    const res = await fetch(`/edit`, {
+    await fetch(`/edit`, {
       method: 'PUT',
       body: JSON.stringify(formData),
       headers: {
@@ -205,7 +202,7 @@ const onDelete = async (td) => {
     document.getElementById('productList').deleteRow(row.rowIndex);
 
     try {
-      const res = await fetch(`/delete`, {
+      await fetch(`/delete`, {
         method: 'DELETE',
         body: JSON.stringify({
           id: row.id,
@@ -246,20 +243,42 @@ const onCheck = (checkbox) => {
   headDetail[3].textContent = `Suma zaznaczonych: ${countDetailAmount}`;
 }
 
+//hide section
+const onHide = (btn) => {
+  if(btn.name === 'productSection') {
+    const searchSection = document.querySelector('.search');
+    const productMain = document.querySelector('.productMain');
+
+    if (productMain.style.display === "none") {
+      productMain.style.display = "block";
+      searchSection.style.display = "block";
+      btn.innerText = 'Ukryj';
+    } else {
+      productMain.style.display = "none";
+      searchSection.style.display = "none";
+      btn.innerText = 'Odkryj';
+    }
+  }
+  if(btn.name === 'detailSection') {
+    detailHeader.classList.add('invisible');
+    detailMain.classList.add('invisible');
+  }
+}
+
 //Reset product form
 const resetForm = () => {
-  document.getElementById("productName").value = '';
-  document.getElementById("productSecondName").value = '';
-  document.getElementById("productUnit").value = '';
-  document.getElementById("productPlace").value = '';
+  getAddProductFrom.querySelector('input[name="productName"]').value = '';
+  getAddProductFrom.querySelector('input[name="productSecondName"]').value = '';
+  getAddProductFrom.querySelector('select[name="productUnit"]').selectedIndex = 0;
+  getAddProductFrom.querySelector('input[name="productPlace"]').value = '';
   selectedRow = null;
 }
 
 //Reset detail form
 const resetDetailForm = () => {
-  document.getElementById("detailAmount").value = '';
-  document.getElementById("detailData").value = '';
-  document.getElementById("detailPerson").value = '';
+  getAddDetailFrom.querySelector('input[name="detailAmount"]').value = '';
+  getAddDetailFrom.querySelector('input[name="detailData"]').value = '';
+  getAddDetailFrom.querySelector('select[name="detailPerson"]').selectedIndex = 0;
 }
 
 //Reset detail header
@@ -283,7 +302,7 @@ const resetCheckbox = () => {
   const checkbox = document.querySelectorAll('input[type=checkbox]');
   for (const el of checkbox){
     el.checked = false;
-  };
+  }
 }
 
 const searchProduct = () => {
@@ -291,7 +310,7 @@ const searchProduct = () => {
 
   products.forEach(element => {
     const isVisible = element.product.name.toLowerCase().includes(value);
-    (!isVisible) ? element.label.className = 'hidden' : element.label.className = 'productList';
+    (!isVisible) ? element.label.className = 'hiddenRow' : element.label.className = '';
   });
 };
 
@@ -299,7 +318,7 @@ searchInput.addEventListener('input', searchProduct);
 
 const addProductForm = async (e) => {
   event.preventDefault();
-  const {productName, productSecondName, productAmount, productUnit, productPlace} = e.target;
+  const {productName, productSecondName, productUnit, productPlace} = e.target;
 
   if (selectedRow == null){
     try {
@@ -326,7 +345,6 @@ const addProductForm = async (e) => {
       id: selectedRow.id,
       name: productName.value,
       secondName: productSecondName.value,
-      // amount: productAmount.value,
       unit: productUnit.value,
       place: productPlace.value,
     }
@@ -349,7 +367,7 @@ const addDetailForm = async (e) => {
 
   if (selectedRow == null){
     try {
-      const data = await fetch(`/${detailId}/add`, {
+      await fetch(`/${detailId}/add`, {
         method: 'POST',
         body: JSON.stringify({
           id: detailId,
@@ -375,6 +393,8 @@ getAddDetailFrom.addEventListener('submit', addDetailForm);
 
 const onDetail = async (td) => {
   detailId = td.parentElement.parentElement.id;
+  detailHeader.classList.remove('invisible');
+  detailMain.classList.remove('invisible');
 
   resetDetailFilter();
   resetDetailSort();
@@ -411,7 +431,7 @@ const getDetail = async (id) => {
     return {productDetail: element, label: id}
   });
 
-  await getProducts()
+  // await getProducts();
 };
 
 const getProducts = async () => {

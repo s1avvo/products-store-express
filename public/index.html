@@ -2,172 +2,167 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="css/style.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
     <title>Lista produktów</title>
 </head>
 <body>
-<div class="wrapper">
-    <table>
-        <tr>
-            <td class="left-side-form">
-                <form autocomplete="off" id="addProductForm">
-                    <div>
-                        <label for="productName">Nazwa produktu</label>
-                        <input type="text" name="productName" id="productName">
-                    </div>
-                    <div>
-                        <label for="productSecondName">Nazewnictwo</label>
-                        <input type="text" name="productSecondName" id="productSecondName">
-                    </div>
-                    <div>
-                        <label for="productUnit">Jed.</label>
-                        <select name="productUnit" id="productUnit">
-                            <option hidden>Miary</option>
-                            <option value="gr">gr</option>
-                            <option value="dag">dag</option>
-                            <option value="kg">kg</option>
-                            <option value="l">l</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label for="productPlace">Miejsca</label>
-                        <input type="text" name="productPlace" id="productPlace">
-                    </div>
-                    <div class="form_action--button">
-                        <input type="submit" value="Zapisz">
-                        <input type="reset" value="Wyczyść">
-                    </div>
-                </form>
-            </td>
-            <td>
-                <table class="product-search">
-                    <tr>
-                        <td class="right">
-                            <input class="search-product" type="search" id="search" placeholder="Znajdź produkt">
-                            <select class="product-sort">
-                                <option hidden>Sortowanie</option>
-                                <option value="min-amount">Najmniejsza ilość</option>
-                                <option value="max-amount">Największa ilość</option>
-                                <option value="min-place">Miejsce od A-Z</option>
-                                <option value="max-place">Miejsce od Z-A</option>
+    <section class="header">
+        <div class="navbar navbar-expand-md navbar-dark bg-dark">
+            <div class="container">
+                <span class="navbar-brand fw-bold">DODAJ PRODUKT:</span>
+                <button type="button" data-bs-toggle="collapse" data-bs-target="#navbar1" class="navbar-toggler">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse justify-content-end" id="navbar1">
+                    <form class="d-flex flex-column flex-sm-row p-3 p-sm-0" id="addProductForm">
+                        <div class="p-1">
+                            <input type="text" name="productName" placeholder="Nazwa produktu"
+                               class="form-control form-control-sm me-2"></div>
+                        <div class="p-1">
+                            <input type="text" name="productSecondName" placeholder="Druga nazwa"
+                               class="form-control form-control-sm me-2"></div>
+                        <div class="p-1">
+                            <select name="productUnit" class="form-select-sm">
+                                <option hidden>Jednostki</option>
+                                <option value="kg">kg</option>
+                                <option value="l">l</option>
                             </select>
-                            <input type="button" value="Drukuj" onclick="printProductsList()">
-                        </td>
-                    </tr>
-                </table>
-                <table class="list product-list" id="productList">
-                    <col>
-                    <col>
-                    <col>
-                    <col>
-                    <col>
-                    <col>
-                    <thead>
-                        <tr>
-                            <th>Nazwa</th>
-                            <th>Nazewnictwo</th>
-                            <th>Ilość</th>
-                            <th>Jed.</th>
-                            <th>Miejsce</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
+                        </div>
+                        <div class="p-1">
+                            <input type="text" name="productPlace" placeholder="Miejsce"
+                               class="form-control form-control-sm me-2"></div>
+                        <div class="p-1 d-flex justify-content-end">
+                            <button type="submit" class="form_action--button btn btn-sm btn-outline-light px-5">Dodaj</button></div>
+                        <div class="p-1 d-flex justify-content-end" id="hideProductSection">
+                            <button type="button" name="productSection" class="btn btn-sm btn-light px-2" onClick="onHide(this)">Ukryj</button></div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="search">
+        <div class="container">
+            <div class="row justify-content-end my-2">
+                <div class="col-xl-4 col-md-5">
+                    <input type="search" class="form-control" id="productSearch" placeholder="Znajdź produkt">
+                </div>
+                <div class="col-auto pt-md-0 pt-2">
+                    <select class="form-select" id="productSort">
+                        <option hidden>Sortowanie</option>
+                        <option value="min-amount">Najmniejsza ilość</option>
+                        <option value="max-amount">Największa ilość</option>
+                        <option value="min-place">Miejsce od A-Z</option>
+                        <option value="max-place">Miejsce od Z-A</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="productMain">
+        <div class="container">
+            <table class="table table-light table-striped table-hover" id="productList">
+                <thead>
+                    <th scope="col" class="col-sm-3">Nazwa</th>
+                    <th scope="col" class="col-sm-3 hiddenColumn">Druga nazwa</th>
+                    <th scope="col" class="col-sm-2">Ilość</th>
+                    <th scope="col" class="col-sm-1">Jed.</th>
+                    <th scope="col" class="col-sm-1 hiddenColumn">Miejsce</th>
+                    <th scope="col" class="col-sm-2"></th>
+                </thead>
+                <tbody>
 
-                    </tbody>
-                </table>
-            </td>
-        </tr>
-    </table>
-    <hr>
-    <table>
-        <tr>
-            <td class="left-side-form">
-                <form autocomplete="off" id="addDetailForm">
-                    <div class="hidden">
-                        <label for="detailId">Id</label>
-                        <input type="text" name="detailId" id="detailId">
-                    </div>
-                    <div>
-                        <label for="detailAmount">Ilość</label>
-                        <input type="text" name="detailAmount" id="detailAmount">
-                    </div>
-                    <div>
-                        <label for="detailData">Data</label>
-                        <input type="datetime-local" name="detailData" id="detailData">
-                    </div>
-                    <div>
-                        <label for="detailPerson">Osoba</label>
-                        <select name="detailPerson" id="detailPerson">
-                            <option value="Katarzyna Nadolna">Katarzyna Nadolna</option>
-                            <option value="Adam">Adam</option>
-                            <option value="Robert">Robert</option>
-                            <option value="Grażyna">Grażyna</option>
-                        </select>
-                    </div>
-                    <div class="form-detail-button">
-                        <input type="submit" value="Dodaj">
-                        <input type="reset" value="Wyczyść">
-                    </div>
-                </form>
-            </td>
-            <td>
-                <table class="detail-filter">
-                    <tr>
-                        <td class="left">
-                            <div class="head-detail-product">
-                                <ul>
-                                    <li>Nazwa</li>
-                                    <li>Ilość</li>
-                                    <li>Miejsce</li>
-                                    <li>Suma zaznaczonych</li>
-                                </ul>
-                            </div>
-                        </td>
-                    </tr>
-                </table>
-                <table>
-                    <tr>
-                        <td class="right">
-                            <form class="detail-filter-form" method="GET">
-                                <input type="datetime-local" id="dataFrom">
-                                <input type="datetime-local" id="dataTo">
-                                <button type="submit" name="detailDataRange" detail-data-range>Filtr</button>
-                                <button type="reset" name="resetDetailDataRange" reset-detail-data-range>Reset</button>
-                            </form>
-                            <select class="detail-sort">
-                                <option hidden>Sortowanie</option>
-                                <option value="1">Data najnowsze</option>
-                                <option value="2">Data najstarsze</option>
-                                <option value="3">Osoba A-Z</option>
+                </tbody>
+            </table>
+        </div>
+    </section>
+    <section class="detail-header invisible">
+        <div class="navbar navbar-expand-md navbar-dark bg-dark">
+            <div class="container">
+                <span class="navbar-brand fw-bold">DODAJ ILOŚĆ:</span>
+                <button type="button" data-bs-toggle="collapse" data-bs-target="#navbar2" class="navbar-toggler">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse justify-content-end" id="navbar2">
+                    <form action="#" class="d-flex flex-column flex-sm-row p-3 p-sm-0" id="addDetailForm">
+                        <div class="p-1">
+                            <input type="text" name="detailId" id="detailId"
+                                   class="form-control form-control-sm me-2 invisible"></div>
+                        <div class="p-1">
+                            <input type="text" name="detailAmount" placeholder="Ilość"
+                                   class="form-control form-control-sm me-2"></div>
+                        <div class="p-1">
+                            <input type="datetime-local" name="detailData"
+                                   class="form-control form-control-sm me-2"></div>
+                        <div class="p-1">
+                            <select name="detailPerson" class="form-select-sm">
+                                <option value="Katarzyna Nadolna" selected>Katarzyna Nadolna</option>
+                                <option value="dr Dorota Olender">dr Dorota Olender</option>
+                                <option value="dr Anna Pawełczyk">dr Anna Pawełczyk</option>
+                                <option value="mgr Katarzyna Sowa">mgr Katarzyna Sowa</option>
+                                <option value="doc Barbara Cwynar">doc Barbara Cwynar</option>
+                                <option value="dr Justyna Żwawiak">dr Justyna Żwawiak</option>
+                                <option value="prof Marek Bernard">prof Marek Bernard</option>
+                                <option value="dr Joanna Warguła">dr Joanna Warguła</option>
                             </select>
-                        </td>
-                    </tr>
-                </table>
-                <table class="list detail-list" id="detailList">
-                    <col>
-                    <col>
-                    <col>
-                    <col>
-                    <thead>
-                        <tr>
-                            <th>X</th>
-                            <th>Data</th>
-                            <th>Ilość</th>
-                            <th>Osoba</th>
-                        </tr>
-                    </thead>
-                    <tbody>
+                        </div>
+                        <div class="p-1 d-flex justify-content-end">
+                            <button type="submit" class="form-detail-button btn btn-sm btn-outline-light px-5">Dodaj</button></div>
+                        <div class="p-1 d-flex justify-content-end" id="hideDetailSection">
+                            <button type="button" name="detailSection" class="btn btn-sm btn-light w-15" onClick="onHide(this)">Ukryj</button></div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="container bg-light">
+            <div class="row py-3">
+                <div class="col-md-9 border-4 border-end border-dark" id="headDetailProduct">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">Nazwa</li>
+                        <li class="list-group-item">Ilość</li>
+                        <li class="list-group-item">Miejsce</li>
+                        <li class="list-group-item">Suma zaznaczonych</li>
+                    </ul>
+                </div>
+                <div class="col-md-3">
+                    <form class="detail-filter-form mt-md-0 mt-sm-3" method="GET" id="detailFilterForm">
+                        <input type="datetime-local" class="form-control d-inline" id="dataFrom">
+                        <input type="datetime-local" class="form-control d-inline" id="dataTo">
+                        <div class="mt-2 text-end">
+                            <button type="submit" class="btn btn-outline-secondary btn-sm px-4"
+                                    name="detailDataRange" detail-data-range>Filtr</button>
+                            <button type="reset" class="btn btn-outline-secondary btn-sm px-4"
+                                    name="resetDetailDataRange" reset-detail-data-range>Reset</button>
+                        </div>
+                    </form>
+                    <select class="form-select mt-2 align-self-end" id="detailSort">
+                        <option hidden>Sortowanie</option>
+                        <option value="1">Data najnowsze</option>
+                        <option value="2">Data najstarsze</option>
+                        <option value="3">Osoba A-Z</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="detail-main invisible">
+        <div class="container">
+            <table class="table table-light table-striped table-hover" id="detailList">
+                <thead>
+                <th scope="col" class="col-sm-1"></th>
+                <th scope="col" class="col-sm-3">Data</th>
+                <th scope="col" class="col-sm-2">Ilość</th>
+                <th scope="col" class="col-sm-6">Osoba</th>
+                </thead>
+                <tbody>
 
-                    </tbody>
-                </table>
-            </td>
-        </tr>
-    </table>
-</div>
+                </tbody>
+            </table>
+        </div>
+    </section>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-u1OknCvxWvY5kfmNBILK2hRnQC3Pr17a+RTT6rIHI7NnikvbZlHgTPOOmMi466C8" crossorigin="anonymous"></script>
 <script src="/js/script.js"></script>
 </body>
 </html>
