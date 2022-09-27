@@ -6,18 +6,18 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="css/style.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
-    <title>Lista produktów</title>
+    <title>Spis towarów</title>
 </head>
 <body>
     <section class="header">
-        <div class="navbar navbar-expand-md navbar-dark bg-dark">
+        <div class="navbar navbar-expand-md navbar-dark bg-secondary">
             <div class="container">
                 <span class="navbar-brand fw-bold">DODAJ PRODUKT:</span>
                 <button type="button" data-bs-toggle="collapse" data-bs-target="#navbar1" class="navbar-toggler">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse justify-content-end" id="navbar1">
-                    <form class="d-flex flex-column flex-sm-row p-3 p-sm-0" id="addProductForm">
+                    <form class="d-flex flex-column flex-md-row p-3 p-sm-0" id="addProductForm">
                         <div class="p-1">
                             <input type="text" name="productName" placeholder="Nazwa produktu"
                                class="form-control form-control-sm me-2"></div>
@@ -36,14 +36,14 @@
                                class="form-control form-control-sm me-2"></div>
                         <div class="p-1 d-flex justify-content-end">
                             <button type="submit" class="form_action--button btn btn-sm btn-outline-light px-5">Dodaj</button></div>
-                        <div class="p-1 d-flex justify-content-end" id="hideProductSection">
-                            <button type="button" name="productSection" class="btn btn-sm btn-light px-2" onClick="onHide(this)">Ukryj</button></div>
+                        <div class="p-1 d-flex justify-content-end">
+                            <button type="button" name="productSection" class="btn btn-sm btn-light px-2" onClick="onHideProduct(this)" id="hideProductSection">Ukryj</button></div>
                     </form>
                 </div>
             </div>
         </div>
     </section>
-    <section class="search">
+    <section class="search" style="display:block">
         <div class="container">
             <div class="row justify-content-end my-2">
                 <div class="col-xl-4 col-md-5">
@@ -61,16 +61,16 @@
             </div>
         </div>
     </section>
-    <section class="productMain">
+    <section class="productMain" style="display:block;">
         <div class="container">
             <table class="table table-light table-striped table-hover" id="productList">
                 <thead>
-                    <th scope="col" class="col-sm-3">Nazwa</th>
+                    <th scope="col" class="col-sm-4">Nazwa</th>
                     <th scope="col" class="col-sm-3 hiddenColumn">Druga nazwa</th>
                     <th scope="col" class="col-sm-2">Ilość</th>
                     <th scope="col" class="col-sm-1">Jed.</th>
                     <th scope="col" class="col-sm-1 hiddenColumn">Miejsce</th>
-                    <th scope="col" class="col-sm-2"></th>
+                    <th scope="col" class="col-sm-1"></th>
                 </thead>
                 <tbody>
 
@@ -79,65 +79,73 @@
         </div>
     </section>
     <section class="detail-header invisible">
-        <div class="navbar navbar-expand-md navbar-dark bg-dark">
+        <div class="navbar navbar-expand-md navbar-dark bg-secondary">
             <div class="container">
                 <span class="navbar-brand fw-bold">DODAJ ILOŚĆ:</span>
                 <button type="button" data-bs-toggle="collapse" data-bs-target="#navbar2" class="navbar-toggler">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse justify-content-end" id="navbar2">
-                    <form action="#" class="d-flex flex-column flex-sm-row p-3 p-sm-0" id="addDetailForm">
+                    <form action="#" class="d-flex flex-column flex-md-row p-3 p-sm-0" id="addDetailForm">
                         <div class="p-1">
                             <input type="text" name="detailId" id="detailId"
                                    class="form-control form-control-sm me-2 invisible"></div>
                         <div class="p-1">
-                            <input type="text" name="detailAmount" placeholder="Ilość"
-                                   class="form-control form-control-sm me-2"></div>
+                            <input type="number" name="detailAmount" placeholder="Ilość"
+                                   class="form-control form-control-sm me-2" step="0.001"></div>
                         <div class="p-1">
-                            <input type="datetime-local" name="detailData"
+                            <input id="detailAddData" type="datetime-local" name="detailData"
                                    class="form-control form-control-sm me-2"></div>
                         <div class="p-1">
                             <select name="detailPerson" class="form-select-sm">
                                 <option value="Katarzyna Nadolna" selected>Katarzyna Nadolna</option>
-                                <option value="dr Dorota Olender">dr Dorota Olender</option>
-                                <option value="dr Anna Pawełczyk">dr Anna Pawełczyk</option>
-                                <option value="mgr Katarzyna Sowa">mgr Katarzyna Sowa</option>
-                                <option value="doc Barbara Cwynar">doc Barbara Cwynar</option>
-                                <option value="dr Justyna Żwawiak">dr Justyna Żwawiak</option>
-                                <option value="prof Marek Bernard">prof Marek Bernard</option>
-                                <option value="dr Joanna Warguła">dr Joanna Warguła</option>
+                                <option value="Dorota Olender">Dorota Olender</option>
+                                <option value="Anna Pawełczyk">Anna Pawełczyk</option>
+                                <option value="Katarzyna Sowa">Katarzyna Sowa</option>
+                                <option value="Barbara Cwynar">Barbara Cwynar</option>
+                                <option value="Justyna Żwawiak">Justyna Żwawiak</option>
+                                <option value="Marek Bernard">Marek Bernard</option>
+                                <option value="Joanna Warguła">Joanna Warguła</option>
                             </select>
                         </div>
                         <div class="p-1 d-flex justify-content-end">
                             <button type="submit" class="form-detail-button btn btn-sm btn-outline-light px-5">Dodaj</button></div>
                         <div class="p-1 d-flex justify-content-end" id="hideDetailSection">
-                            <button type="button" name="detailSection" class="btn btn-sm btn-light w-15" onClick="onHide(this)">Ukryj</button></div>
+                            <button type="button" name="detailSection" class="btn btn-sm btn-light w-15" onClick="onHideDetail()">Ukryj</button></div>
                     </form>
                 </div>
             </div>
         </div>
-        <div class="container bg-light">
-            <div class="row py-3">
-                <div class="col-md-9 border-4 border-end border-dark" id="headDetailProduct">
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item">Nazwa</li>
-                        <li class="list-group-item">Ilość</li>
-                        <li class="list-group-item">Miejsce</li>
-                        <li class="list-group-item">Suma zaznaczonych</li>
-                    </ul>
-                </div>
-                <div class="col-md-3">
-                    <form class="detail-filter-form mt-md-0 mt-sm-3" method="GET" id="detailFilterForm">
-                        <input type="datetime-local" class="form-control d-inline" id="dataFrom">
-                        <input type="datetime-local" class="form-control d-inline" id="dataTo">
-                        <div class="mt-2 text-end">
-                            <button type="submit" class="btn btn-outline-secondary btn-sm px-4"
+    </section>
+    <section class="detail-filter invisible">
+        <div class="container">
+            <div class="py-3" id="headDetailProduct">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">Nazwa</li>
+                    <li class="list-group-item">Ilość</li>
+                    <li class="list-group-item">Miejsce</li>
+                    <li class="list-group-item">Suma zaznaczonych</li>
+                </ul>
+            </div>
+            <div class="row py-3 justify-content-end align-items-center bg-secondary rounded-2">
+                <div class="col-md-4">
+                    <form class="row" method="GET" id="detailFilterForm">
+                        <div class="col-md-4 p-1">
+                            <input type="datetime-local" class="form-control" id="dataFrom">
+                        </div>
+                        <div class="col-md-4 p-1">
+                            <input type="datetime-local" class="form-control" id="dataTo">
+                        </div>
+                        <div class="btn-group col-md-4 p-1 text-start align-self-center" role="group">
+                            <button type="submit" class="btn btn-outline-light btn-sm px-4"
                                     name="detailDataRange" detail-data-range>Filtr</button>
-                            <button type="reset" class="btn btn-outline-secondary btn-sm px-4"
-                                    name="resetDetailDataRange" reset-detail-data-range>Reset</button>
+                            <button type="reset" class="btn btn-outline-light btn-sm px-1"
+                                    name="resetDetailDataRange" reset-detail-data-range>X</button>
                         </div>
                     </form>
-                    <select class="form-select mt-2 align-self-end" id="detailSort">
+                </div>
+                <div class="col-md-2">
+                    <select class="form-select" id="detailSort">
                         <option hidden>Sortowanie</option>
                         <option value="1">Data najnowsze</option>
                         <option value="2">Data najstarsze</option>
@@ -151,7 +159,7 @@
         <div class="container">
             <table class="table table-light table-striped table-hover" id="detailList">
                 <thead>
-                <th scope="col" class="col-sm-1"></th>
+                <th scope="col " class="col-sm-1"></th>
                 <th scope="col" class="col-sm-3">Data</th>
                 <th scope="col" class="col-sm-2">Ilość</th>
                 <th scope="col" class="col-sm-6">Osoba</th>

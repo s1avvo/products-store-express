@@ -8,6 +8,7 @@ const searchInput = document.querySelector('#productSearch');
 const detailFilter = document.querySelector('#detailFilterForm');
 const sortSelectDetail = document.querySelector('#detailSort');
 const detailHeader = document.querySelector('.detail-header');
+const detailFilterSort = document.querySelector('.detail-filter');
 const detailMain = document.querySelector('.detail-main');
 
 let selectedRow = null;
@@ -115,24 +116,25 @@ const insertProductsList = (data) => {
   products = data.map(element => {
     const newRow = productTable.insertRow(productTable.length);
     newRow.id = element.id;
-    let cell1 = newRow.insertCell(0);
-    cell1.innerText = element.name;
-    let cell2 = newRow.insertCell(1);
+    let cell1 = newRow.insertCell(0)
+    cell1.innerHTML = `<div class="d-grid btn btn-none text-start" role="button" onClick="onDetail(this)">${element.name}</div>`;
+    let cell2 = newRow.insertCell(1)
     cell2.classList.add('hiddenColumn');
     cell2.innerText = element.secondName;
-    let cell3 = newRow.insertCell(2);
+    let cell3 = newRow.insertCell(2)
     cell3.innerText = element.amount;
-    let cell4 = newRow.insertCell(3);
+    let cell4 = newRow.insertCell(3)
     cell4.innerText = element.unit;
-    let cell5 = newRow.insertCell(4);
+    let cell5 = newRow.insertCell(4)
     cell5.classList.add('hiddenColumn');
     cell5.innerText = element.place;
-    let cell6 = newRow.insertCell(5);
+    let cell6 = newRow.insertCell(5)
     cell6.classList.add('text-center');
-    cell6.innerHTML = `
-        <button type="button" class="btn btn-outline-secondary btn-sm d-block d-sm-inline" onClick="onEdit(this)">Edytuj</button>
-        <button type="button" class="btn btn-outline-secondary btn-sm d-block d-sm-inline" onClick="onDetail(this)">Więcej</button>
-        <button type="button" class="btn btn-outline-secondary btn-sm d-block d-sm-inline" onClick="onDelete(this)">X</button>
+    cell6.innerHTML = ` 
+        <div class="btn-group" role="group"> 
+        <button type="button" class="btn btn-secondary btn-sm d-block d-sm-inline" onClick="onEdit(this)">Edytuj</button>
+        <button type="button" class="btn btn btn-danger btn-sm d-block d-sm-inline" onClick="onDelete(this)">X</button>
+        </div>
     `;
 
     return {product: element, label: newRow}
@@ -143,10 +145,10 @@ const insertProductsList = (data) => {
 const insertProductHeadDetail = (data) => {
   const {name, amount, unit, place} = data
 
-  headDetail[0].textContent = `Nazwa: ${name}`;
-  headDetail[1].textContent = `Ilość: ${amount}${unit}`;
-  headDetail[2].textContent = `Miejsce: ${place}`;
-  headDetail[3].textContent = `Suma zaznaczonych: ${countDetailAmount}`;
+  headDetail[0].innerHTML = `Nazwa: <span class="fw-bold">${name}</span>`;
+  headDetail[1].innerHTML = `Ilość: <span class="fw-bold">${amount}${unit}</span>`;
+  headDetail[2].innerHTML = `Miejsce: <span class="fw-bold">${place}</span>`;
+  headDetail[3].innerHTML = `Suma zaznaczonych: <span class="fw-bold">${countDetailAmount}</span>`;
 }
 
 //Insert product detail
@@ -173,7 +175,7 @@ const insertProductDetail = (data) => {
 
 //Edit the data
 const onEdit = (td) => {
-  selectedRow = td.parentElement.parentElement;
+  selectedRow = td.parentElement.parentElement.parentElement;
   getAddProductFrom.querySelector('input[name="productName"]').value = selectedRow.cells[0].innerHTML;
   getAddProductFrom.querySelector('input[name="productSecondName"]').value = selectedRow.cells[1].innerHTML;
   getAddProductFrom.querySelector('select[name="productUnit"]').value = selectedRow.cells[3].innerHTML;
@@ -198,7 +200,7 @@ const updateRecord = async (formData) => {
 //Delete the data
 const onDelete = async (td) => {
   if (confirm('Do you want to delete this record?')) {
-    const row = td.parentElement.parentElement;
+    const row = td.parentElement.parentElement.parentElement;
     document.getElementById('productList').deleteRow(row.rowIndex);
 
     try {
@@ -240,29 +242,38 @@ const onCheck = (checkbox) => {
       ? countDetailAmount -= Number(detailAmountValue.slice(1))
       : countDetailAmount += Number(detailAmountValue.slice(1));
   }
-  headDetail[3].textContent = `Suma zaznaczonych: ${countDetailAmount}`;
+  headDetail[3].innerHTML = `Suma zaznaczonych: <span class="fw-bold">${countDetailAmount}</span>`;
 }
 
 //hide section
-const onHide = (btn) => {
-  if(btn.name === 'productSection') {
-    const searchSection = document.querySelector('.search');
-    const productMain = document.querySelector('.productMain');
+const onHideProduct = async (btn = 'onHideProduct') => {
+  const searchSection = document.querySelector('.search');
+  const productMain = document.querySelector('.productMain');
+  const btnShow = document.querySelector('#hideProductSection');
 
-    if (productMain.style.display === "none") {
-      productMain.style.display = "block";
-      searchSection.style.display = "block";
-      btn.innerText = 'Ukryj';
-    } else {
-      productMain.style.display = "none";
-      searchSection.style.display = "none";
-      btn.innerText = 'Odkryj';
-    }
+  if (productMain.style.display === "none") {
+    productMain.style.display = "block";
+    searchSection.style.display = "block";
+    btn.innerText = 'Ukryj';
+
+    await getProducts();
+
+  } else if (productMain.style.display === "block") {
+    productMain.style.display = "none";
+    searchSection.style.display = "none";
+    (!btn.name) ? btnShow.innerText = 'Odkryj' : btn.innerText = 'Odkryj';
   }
-  if(btn.name === 'detailSection') {
-    detailHeader.classList.add('invisible');
-    detailMain.classList.add('invisible');
-  }
+}
+
+const onHideDetail = () => {
+  detailHeader.classList.add('invisible');
+  detailFilterSort.classList.add('invisible');
+  detailMain.classList.add('invisible');
+}
+
+const firstDayOfMonth = () => {
+  const now = new Date();
+  return  new Date(now.getFullYear(), now.getMonth(), 2).toISOString().slice(0,16);
 }
 
 //Reset product form
@@ -276,15 +287,15 @@ const resetForm = () => {
 
 //Reset detail form
 const resetDetailForm = () => {
-  getAddDetailFrom.querySelector('input[name="detailAmount"]').value = '';
-  getAddDetailFrom.querySelector('input[name="detailData"]').value = '';
+  getAddDetailFrom.querySelector('input[name="detailAmount"]').value = '0.00';
+  getAddDetailFrom.querySelector('input[name="detailData"]').value = new Date().toISOString().slice(0, 16);
   getAddDetailFrom.querySelector('select[name="detailPerson"]').selectedIndex = 0;
 }
 
 //Reset detail header
 const resetDetailFilter = () => {
-  detailFilter.querySelectorAll('input[type="datetime-local"]')[0].value = '';
-  detailFilter.querySelectorAll('input[type="datetime-local"]')[1].value = '';
+  detailFilter.querySelectorAll('input[type="datetime-local"]')[0].value = firstDayOfMonth();
+  detailFilter.querySelectorAll('input[type="datetime-local"]')[1].value = new Date().toISOString().slice(0, 16);
 }
 
 //Reset detail sort
@@ -393,13 +404,17 @@ getAddDetailFrom.addEventListener('submit', addDetailForm);
 
 const onDetail = async (td) => {
   detailId = td.parentElement.parentElement.id;
+
   detailHeader.classList.remove('invisible');
+  detailFilterSort.classList.remove('invisible');
   detailMain.classList.remove('invisible');
 
+  resetDetailForm();
   resetDetailFilter();
   resetDetailSort();
   resetDetailCount();
 
+  await onHideProduct();
   await getDetailHeader(detailId)
   await getDetail(detailId)
 
@@ -430,8 +445,6 @@ const getDetail = async (id) => {
   detailsForFilter = data.map(element => {
     return {productDetail: element, label: id}
   });
-
-  // await getProducts();
 };
 
 const getProducts = async () => {
