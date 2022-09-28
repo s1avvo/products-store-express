@@ -117,7 +117,14 @@ const insertProductsList = (data) => {
     const newRow = productTable.insertRow(productTable.length);
     newRow.id = element.id;
     let cell1 = newRow.insertCell(0)
-    cell1.innerHTML = `<div class="d-grid btn btn-none text-start" role="button" onClick="onDetail(this)">${element.name}</div>`;
+    const div = document.createElement('div');
+
+    div.classList.add('d-grid','btn', 'btn-none', 'text-start');
+    div.setAttribute("role", "button");
+    div.setAttribute("onClick", "onDetail(this)");
+    div.innerText = element.name;
+    cell1.appendChild(div);
+
     let cell2 = newRow.insertCell(1)
     cell2.classList.add('hiddenColumn');
     cell2.innerText = element.secondName;
@@ -176,10 +183,10 @@ const insertProductDetail = (data) => {
 //Edit the data
 const onEdit = (td) => {
   selectedRow = td.parentElement.parentElement.parentElement;
-  getAddProductFrom.querySelector('input[name="productName"]').value = selectedRow.cells[0].innerHTML;
-  getAddProductFrom.querySelector('input[name="productSecondName"]').value = selectedRow.cells[1].innerHTML;
-  getAddProductFrom.querySelector('select[name="productUnit"]').value = selectedRow.cells[3].innerHTML;
-  getAddProductFrom.querySelector('input[name="productPlace"]').value = selectedRow.cells[4].innerHTML;
+  getAddProductFrom.querySelector('input[name="productName"]').value = selectedRow.cells[0].firstChild.innerText;
+  getAddProductFrom.querySelector('input[name="productSecondName"]').value = selectedRow.cells[1].innerText;
+  getAddProductFrom.querySelector('select[name="productUnit"]').value = selectedRow.cells[3].innerText;
+  getAddProductFrom.querySelector('input[name="productPlace"]').value = selectedRow.cells[4].innerText;
 }
 
 const updateRecord = async (formData) => {
@@ -254,7 +261,7 @@ const onHideProduct = async (btn = 'onHideProduct') => {
   if (productMain.style.display === "none") {
     productMain.style.display = "block";
     searchSection.style.display = "block";
-    btn.innerText = 'Ukryj';
+    (!btn.name) ? btnShow.innerText = 'Ukryj' : btn.innerText = 'Ukryj';
 
     await getProducts();
 
@@ -269,6 +276,7 @@ const onHideDetail = () => {
   detailHeader.classList.add('invisible');
   detailFilterSort.classList.add('invisible');
   detailMain.classList.add('invisible');
+  onHideProduct();
 }
 
 const firstDayOfMonth = () => {
