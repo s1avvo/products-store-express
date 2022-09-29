@@ -19,28 +19,28 @@ let filterRangeDetails = [];
 let detailId;
 let countDetailAmount = 0;
 
-const sortProductList = (event) => {
-  event.preventDefault();
-
-  if(event.target.value === 'min-amount'){
-    const sorted = products.map(element => element.product).sort((a, b) => (Number(a.amount - b.amount)));
-    insertProductsList(sorted);
-  }
-  if(event.target.value === 'max-amount'){
-    const sorted = products.map(element => element.product).sort((a, b) => (Number(b.amount - a.amount)));
-    insertProductsList(sorted);
-  }
-  if(event.target.value === 'min-place'){
-    const sorted = products.map(element => element.product).sort((a, b) => (Number(a.place - b.place)));
-    insertProductsList(sorted);
-  }
-  if(event.target.value === 'max-place'){
-    const sorted = products.map(element => element.product).sort((a, b) => (Number(b.place - a.place)));
-    insertProductsList(sorted);
-  }
-}
-
-sortSelectList.addEventListener('click', sortProductList);
+// const sortProductList = (event) => {
+//   event.preventDefault();
+//
+//   if(event.target.value === 'min-amount'){
+//     const sorted = products.map(element => element.product).sort((a, b) => (Number(a.amount - b.amount)));
+//     insertProductsList(sorted);
+//   }
+//   if(event.target.value === 'max-amount'){
+//     const sorted = products.map(element => element.product).sort((a, b) => (Number(b.amount - a.amount)));
+//     insertProductsList(sorted);
+//   }
+//   if(event.target.value === 'min-place'){
+//     const sorted = products.map(element => element.product).sort((a, b) => (Number(a.place - b.place)));
+//     insertProductsList(sorted);
+//   }
+//   if(event.target.value === 'max-place'){
+//     const sorted = products.map(element => element.product).sort((a, b) => (Number(b.place - a.place)));
+//     insertProductsList(sorted);
+//   }
+// }
+//
+// sortSelectList.addEventListener('click', sortProductList);
 
 // const detailSortOptions = () => {
 //   const arr = {'1': 'Data najnowsze', '2': 'Data najstarsze', '3': 'Osoba A-Z'}
@@ -146,6 +146,11 @@ const insertProductsList = (data) => {
 
     return {product: element, label: newRow}
   });
+
+  $(products).ready(function () {
+    $('#productList').DataTable();
+  });
+
 }
 
 //Insert product head detail
@@ -254,20 +259,20 @@ const onCheck = (checkbox) => {
 
 //hide section
 const onHideProduct = async (btn = 'onHideProduct') => {
-  const searchSection = document.querySelector('.search');
+  // const searchSection = document.querySelector('.search');
   const productMain = document.querySelector('.productMain');
   const btnShow = document.querySelector('#hideProductSection');
 
   if (productMain.style.display === "none") {
     productMain.style.display = "block";
-    searchSection.style.display = "block";
+    // searchSection.style.display = "block";
     (!btn.name) ? btnShow.innerText = 'Ukryj' : btn.innerText = 'Ukryj';
 
     await getProducts();
 
   } else if (productMain.style.display === "block") {
     productMain.style.display = "none";
-    searchSection.style.display = "none";
+    // searchSection.style.display = "none";
     (!btn.name) ? btnShow.innerText = 'Odkryj' : btn.innerText = 'Odkryj';
   }
 }
@@ -324,16 +329,16 @@ const resetCheckbox = () => {
   }
 }
 
-const searchProduct = () => {
-  const value = event.target.value.toLowerCase();
-
-  products.forEach(element => {
-    const isVisible = element.product.name.toLowerCase().includes(value);
-    (!isVisible) ? element.label.className = 'hiddenRow' : element.label.className = '';
-  });
-};
-
-searchInput.addEventListener('input', searchProduct);
+// const searchProduct = () => {
+//   const value = event.target.value.toLowerCase();
+//
+//   products.forEach(element => {
+//     const isVisible = element.product.name.toLowerCase().includes(value);
+//     (!isVisible) ? element.label.className = 'hiddenRow' : element.label.className = '';
+//   });
+// };
+//
+// searchInput.addEventListener('input', searchProduct);
 
 const addProductForm = async (e) => {
   event.preventDefault();
