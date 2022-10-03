@@ -1,9 +1,7 @@
 const getAddProductFrom = document.getElementById('addProductForm');
 const getAddDetailFrom = document.getElementById('addDetailForm');
-const productTable = document.getElementById("productList").getElementsByTagName('tbody')[0];
 const detailTable = document.getElementById("detailList").getElementsByTagName('tbody')[0];
 const headDetail = document.querySelector('#headDetailProduct').getElementsByTagName('li');
-const sortSelectList = document.querySelector('#productSort');
 const searchInput = document.querySelector('#productSearch');
 const detailFilter = document.querySelector('#detailFilterForm');
 const sortSelectDetail = document.querySelector('#detailSort');
@@ -19,38 +17,10 @@ let filterRangeDetails = [];
 let detailId;
 let countDetailAmount = 0;
 
-// const sortProductList = (event) => {
-//   event.preventDefault();
-//
-//   if(event.target.value === 'min-amount'){
-//     const sorted = products.map(element => element.product).sort((a, b) => (Number(a.amount - b.amount)));
-//     insertProductsList(sorted);
-//   }
-//   if(event.target.value === 'max-amount'){
-//     const sorted = products.map(element => element.product).sort((a, b) => (Number(b.amount - a.amount)));
-//     insertProductsList(sorted);
-//   }
-//   if(event.target.value === 'min-place'){
-//     const sorted = products.map(element => element.product).sort((a, b) => (Number(a.place - b.place)));
-//     insertProductsList(sorted);
-//   }
-//   if(event.target.value === 'max-place'){
-//     const sorted = products.map(element => element.product).sort((a, b) => (Number(b.place - a.place)));
-//     insertProductsList(sorted);
-//   }
-// }
-//
-// sortSelectList.addEventListener('click', sortProductList);
-
-// const detailSortOptions = () => {
-//   const arr = {'1': 'Data najnowsze', '2': 'Data najstarsze', '3': 'Osoba A-Z'}
-//
-//   sortSelectDetail.innerHTML = `<option hidden>Sortowanie</option>`;
-//
-//   for (const [key, value] of Object.entries(arr)) {
-//     sortSelectDetail.innerHTML += `<option value="${key}">${value}</option>`;
-//   }
-// };
+let productData, productTable, sortProductCol;
+let sortAsc = false;
+let pageSize = 10;
+let curPage = 1;
 
 const sortDetailList = (e) => {
   event.preventDefault();
@@ -109,49 +79,141 @@ detailFilter.addEventListener('submit', filterData, false)
 detailFilter.addEventListener('reset', filterData, false)
 
 //Insert products list
-const insertProductsList = (data) => {
+//Insert products list
+const insertProductsList = async () => {
+  productTable = document.querySelector('#productList tbody');
+  productData = await getData('/all');
 
+  renderProductTable();
+
+  document.querySelectorAll('#productList thead tr th span').forEach(t => {
+    t.addEventListener('click', sort, false);
+  });
+}
+
+document.addEventListener('DOMContentLoaded', insertProductsList, false);
+
+const renderProductTable = () => {
   productTable.innerHTML = '';
 
-  products = data.map(element => {
-    const newRow = productTable.insertRow(productTable.length);
-    newRow.id = element.id;
-    let cell1 = newRow.insertCell(0)
-    const div = document.createElement('div');
+  const lastPage = Math.ceil(productData.length / pageSize);
 
-    div.classList.add('d-grid','btn', 'btn-none', 'text-start');
-    div.setAttribute("role", "button");
-    div.setAttribute("onClick", "onDetail(this)");
-    div.innerText = element.name;
-    cell1.appendChild(div);
+  if(curPage > lastPage) {
+    curPage = lastPage;
+  };
 
-    let cell2 = newRow.insertCell(1)
-    cell2.classList.add('hiddenColumn');
-    cell2.innerText = element.secondName;
-    let cell3 = newRow.insertCell(2)
-    cell3.innerText = element.amount;
-    let cell4 = newRow.insertCell(3)
-    cell4.innerText = element.unit;
-    let cell5 = newRow.insertCell(4)
-    cell5.classList.add('hiddenColumn');
-    cell5.innerText = element.place;
-    let cell6 = newRow.insertCell(5)
-    cell6.classList.add('text-center');
-    cell6.innerHTML = ` 
-        <div class="btn-group" role="group"> 
-        <button type="button" class="btn btn-secondary btn-sm d-block d-sm-inline" onClick="onEdit(this)">Edytuj</button>
-        <button type="button" class="btn btn btn-danger btn-sm d-block d-sm-inline" onClick="onDelete(this)">X</button>
-        </div>
-    `;
+  products = productData
+      .filter((row, index) => {
+        let start = (curPage - 1) * pageSize;
+        let end = curPage * pageSize;
+        if (index >= start && index < end) return true;
+      })
+      .map(element => {
+        const newRow = productTable.insertRow(productTable.length);
+        newRow.id = element.id;
+        let cell1 = newRow.insertCell(0)
+        const div = document.createElement('div');
 
-    return {product: element, label: newRow}
-  });
+        div.classList.add('d-grid', 'btn', 'btn-none', 'text-start');
+        div.setAttribute("role", "button");
+        div.setAttribute("onClick", "onDetail(this)");
+        div.innerText = element.name;
+        cell1.appendChild(div);
 
-  $(products).ready(function () {
-    $('#productList').DataTable();
-  });
+        let cell2 = newRow.insertCell(1)
+        cell2.classList.add('hiddenColumn');
+        cell2.innerText = element.secondName;
+        let cell3 = newRow.insertCell(2)
+        cell3.innerText = element.amount;
+        let cell4 = newRow.insertCell(3)
+        cell4.innerText = element.unit;
+        let cell5 = newRow.insertCell(4)
+        cell5.classList.add('hiddenColumn');
+        cell5.innerText = element.place;
+        let cell6 = newRow.insertCell(5)
+        cell6.classList.add('text-center');
+        cell6.innerHTML = ` 
+          <div class="btn-group" role="group"> 
+          <button type="button" class="btn btn-secondary btn-sm d-block d-sm-inline" onClick="onEdit(this)">Edytuj</button>
+          <button type="button" class="btn btn btn-danger btn-sm d-block d-sm-inline" onClick="onDelete(this)">X</button>
+          </div>
+      `;
 
+        return { product: element, label: newRow }
+      });
+
+  setCurrPage(curPage, lastPage);
 }
+
+//sort Tabel
+
+const sort = (e) => {
+  const thisSort = e.target.dataset.sort;
+
+  if(sortProductCol === thisSort) sortAsc = !sortAsc;
+  sortProductCol = thisSort;
+
+  productData.sort((a, b) => {
+    if(a[sortProductCol] < b[sortProductCol]) return sortAsc? 1 : -1;
+    if(a[sortProductCol] > b[sortProductCol]) return sortAsc? -1 : 1;
+    return 0;
+  });
+
+  renderProductTable();
+}
+
+//pagination
+const previousPage = () => {
+  if(curPage > 1) curPage--;
+  renderProductTable();
+}
+
+const nextPage = () => {
+  if((curPage * pageSize) < productData.length) curPage++;
+  renderProductTable();
+}
+
+const setCurrPage = (start, end) => {
+  const currPageSpan = document.querySelector('#currPage');
+  currPageSpan.innerHTML = `${start} z ${end}`;
+}
+
+const setPageSize = (e) => {
+  switch (e.target.value) {
+    case '1':
+      pageSize = 10;
+      break;
+    case '2':
+      pageSize = 25;
+      break;
+    case '3':
+      pageSize = 50;
+      break;
+    default:
+      console.log('Error');
+  };
+  renderProductTable();
+}
+
+document.querySelector('#nextBtn').addEventListener('click', nextPage, false);
+document.querySelector('#prevBtn').addEventListener('click', previousPage, false);
+document.querySelector('#showPage').addEventListener('change', setPageSize, false);
+
+//search input
+const searchProduct = async (e) => {
+  const value = e.target.value.toLowerCase();
+
+  if(!e.target.value) {
+    await insertProductsList();
+  } else {
+    productData = productData.filter(
+        element => element.name.toLowerCase().includes(value) || element.secondName.toLowerCase().includes(value)
+    );
+    renderProductTable();
+  }
+};
+
+searchInput.addEventListener('search', searchProduct);
 
 //Insert product head detail
 const insertProductHeadDetail = (data) => {
@@ -203,10 +265,10 @@ const updateRecord = async (formData) => {
         'Content-Type': 'application/json',
       },
     });
+    await insertProductsList();
   } catch (err) {
     console.log(err);
   }
-  await getProducts();
 }
 
 //Delete the data
@@ -225,11 +287,11 @@ const onDelete = async (td) => {
           'Content-Type': 'application/json',
         },
       });
+      await insertProductsList();
     } catch (err) {
       console.log(err);
     }
-
-    await getDetail(row.id);
+    // await getDetail(row.id);
   }
 }
 
@@ -257,22 +319,16 @@ const onCheck = (checkbox) => {
   headDetail[3].innerHTML = `Suma zaznaczonych: <span class="fw-bold">${countDetailAmount}</span>`;
 }
 
-//hide section
-const onHideProduct = async (btn = 'onHideProduct') => {
-  // const searchSection = document.querySelector('.search');
+// hide section
+const onHideProduct = (btn = 'onHideProduct') => {
   const productMain = document.querySelector('.productMain');
   const btnShow = document.querySelector('#hideProductSection');
 
   if (productMain.style.display === "none") {
     productMain.style.display = "block";
-    // searchSection.style.display = "block";
     (!btn.name) ? btnShow.innerText = 'Ukryj' : btn.innerText = 'Ukryj';
-
-    await getProducts();
-
   } else if (productMain.style.display === "block") {
     productMain.style.display = "none";
-    // searchSection.style.display = "none";
     (!btn.name) ? btnShow.innerText = 'Odkryj' : btn.innerText = 'Odkryj';
   }
 }
@@ -281,7 +337,6 @@ const onHideDetail = () => {
   detailHeader.classList.add('invisible');
   detailFilterSort.classList.add('invisible');
   detailMain.classList.add('invisible');
-  onHideProduct();
 }
 
 const firstDayOfMonth = () => {
@@ -329,17 +384,6 @@ const resetCheckbox = () => {
   }
 }
 
-// const searchProduct = () => {
-//   const value = event.target.value.toLowerCase();
-//
-//   products.forEach(element => {
-//     const isVisible = element.product.name.toLowerCase().includes(value);
-//     (!isVisible) ? element.label.className = 'hiddenRow' : element.label.className = '';
-//   });
-// };
-//
-// searchInput.addEventListener('input', searchProduct);
-
 const addProductForm = async (e) => {
   event.preventDefault();
   const {productName, productSecondName, productUnit, productPlace} = e.target;
@@ -353,16 +397,17 @@ const addProductForm = async (e) => {
           secondName: productSecondName.value,
           amount: 0,
           unit: productUnit.value,
-          place: productPlace.value,
+          place: Number(productPlace.value),
         }),
         headers: {
           'Content-Type': 'application/json',
         },
       });
+      await insertProductsList();
     } catch (err) {
       console.log(err);
     }
-    await getProducts();
+    // await getProducts();
   }
   else{
     const product = {
@@ -370,7 +415,7 @@ const addProductForm = async (e) => {
       name: productName.value,
       secondName: productSecondName.value,
       unit: productUnit.value,
-      place: productPlace.value,
+      place: Number(productPlace.value),
     }
     await updateRecord(product);
   }
@@ -427,7 +472,7 @@ const onDetail = async (td) => {
   resetDetailSort();
   resetDetailCount();
 
-  await onHideProduct();
+  // await onHideProduct();
   await getDetailHeader(detailId)
   await getDetail(detailId)
 
@@ -459,10 +504,3 @@ const getDetail = async (id) => {
     return {productDetail: element, label: id}
   });
 };
-
-const getProducts = async () => {
-  const data = await getData('/all');
-  insertProductsList(data)
-};
-
-getProducts();
