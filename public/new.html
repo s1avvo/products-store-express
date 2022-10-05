@@ -64,11 +64,12 @@
             <thead>
             <th scope="col" class="col-sm-4"><span role="button" data-sort="name">Nazwa</span></th>
             <th scope="col" class="col-sm-3 hiddenColumn"><span role="button" data-sort="secondName">Druga nazwa</span></th>
-            <th scope="col" class="col-sm-2"><span role="button" data-sort="amount">Ilość</span></th>
+            <th scope="col" class="col-sm-2"><span role="button" data-sort="amount">Stan</span></th>
             <th scope="col" class="col-sm-1">Jed.</th>
             <th scope="col" class="col-sm-1 hiddenColumn"><span role="button" data-sort="place">Miejsce</span></th>
             <th scope="col" class="col-sm-1"></th>
             </thead>
+            <!-- data-bs-toggle="modal" data-bs-target="#modalWindow" //dodajemy do przycisku-->
             <tbody>
 
             </tbody>
@@ -80,6 +81,29 @@
             <li class="page-item align-self-center mx-3"><span id="currPage">1 z 3</span></li>
             <li class="page-item"><span class="page-link text-dark" id="nextBtn" role="button">Następna</span></li>
         </ul>
+    </div>
+    <div class="modal fade" id="modalWindow"
+        data-bs-backdrop="static" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalWidowTitle">
+                        Wpisz hasło:
+                    </h5>
+                    <button class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <form id="pswdFrom">
+                    <div class="modal-body">
+                        <input type="password" id="pswd" value="">
+                        <span class="text-danger" id="message"></span>   
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" data-bs-dismiss="modal">Odrzuć</button>
+                        <button type="submit" class="btn btn-primary">Potwierdź</button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
 </section>
 <section class="detail-header invisible">
@@ -100,8 +124,11 @@
                         <input type="text" name="detailId" id="detailId"
                                class="form-control form-control-sm me-2 invisible"></div>
                     <div class="p-1">
+                        <button class="btn btn" id="minus">-</button>
                         <input type="number" name="detailAmount" placeholder="Ilość"
-                               class="form-control form-control-sm me-2" step="0.001"></div>
+                               class="form-control form-control-sm me-2" step="0.001">
+                        <button class="btn btn" id="plus">+</button>
+                    </div>
                     <div class="p-1">
                         <input id="detailAddData" type="datetime-local" name="detailData"
                                class="form-control form-control-sm me-2"></div>
@@ -168,9 +195,12 @@
         <table class="table table-light table-striped table-hover" id="detailList">
             <thead>
             <th scope="col " class="col-sm-1"></th>
-            <th scope="col" class="col-sm-3"><span role="button" data-sort="data">Data</span></th>
-            <th scope="col" class="col-sm-2">Ilość</th>
-            <th scope="col" class="col-sm-6"><span role="button" data-sort="person">Osoba</span></th>
+            <th scope="col" class="col-sm-2"><span role="button" data-sort="data">Data</span></th>
+            <th scope="col" class="col-sm-2">Przychód</th>
+            <th scope="col" class="col-sm-2">Rozchód</th>
+            <th scope="col" class="col-sm-2">Stan</th>
+            <th scope="col" class="col-sm-2"><span role="button" data-sort="person">Osoba</span></th>
+            <th scope="col" class="col-sm-1"></th>
             </thead>
             <tbody>
 
