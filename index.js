@@ -7,6 +7,7 @@ const { handleError } = require('./utils/errors')
 
 const {viewRouter} = require('./routes/view');
 const {listRouter} = require('./routes/store');
+const password = process.env.USER_PWD;
 
 const app = express();
 
@@ -17,7 +18,7 @@ app.use(express.json());
 app.use('/', viewRouter);
 app.use('/store', basicAuth({
     challenge: true,
-    users: { 'knadolna': process.env.PWD }
+    users: { 'knadolna': password }
 }), listRouter);
 
 app.use(handleError);
