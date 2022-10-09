@@ -2,6 +2,16 @@
     display: none;
 }
 
+.displayNone {
+    display: none;
+    visibility: hidden;
+}
+
+/*.pagination > li.active > span {*/
+/*    background-color: #868686;*/
+/*    border-color: rgba(0, 0, 0, 0.16);*/
+/*}*/
+
 @media screen and (max-width: 600px) {
     .hiddenColumn {
         display: none;
