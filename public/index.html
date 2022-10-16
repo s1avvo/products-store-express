@@ -46,14 +46,14 @@
 </section>
 <section id="productMain">
     <div class="container mt-3 d-flex justify-content-between">
-        <div class="col-md-1 col-2">
+        <div class="col-3 col-sm-2 col-md-1">
             <select class="form-select form-select-sm" id="showPage">
                 <option value="1" selected>10</option>
                 <option value="2">25</option>
                 <option value="3">50</option>
             </select>
         </div>
-        <div class="col-md-4 col-6">
+        <div class="col-md-4 col-8">
             <input type="search" class="form-control" id="productSearch" placeholder="Znajdź produkt" />
         </div>
     </div>
@@ -135,7 +135,7 @@
             </ul>
         </div>
         <div class="container mt-3 d-flex justify-content-between align-items-end">
-            <div class="col-md-1 col-2">
+            <div class="col-3 col-sm-2 col-md-1">
                 <select class="form-select form-select-sm" id="showPageDetail">
                     <option value="1" selected>10</option>
                     <option value="2">25</option>
@@ -177,8 +177,7 @@
         </table>
     </div>
     <div class="container mt-3 d-flex justify-content-between">
-        <div class="align-items-center">
-            <span class="fs-6">Powrót do listy głównej: </span>
+        <div class="align-items-center"><span class="fs-6">Powrót do listy: </span>
             <button name="detailSection"
                     class="btn btn-sm btn-secondary"
                     id="hideDetailSection" onClick="backToProductMain(this)">^
@@ -186,9 +185,13 @@
         </div>
         <div>
             <ul class="pagination">
-                <li class="page-item"><span class="page-link text-dark" id="prevBtnDetail" role="button">Poprzednia</span></li>
+                <li class="page-item">
+                    <span class="page-link text-dark" role="button" id="prevBtnDetail" aria-label="Previous">&laquo;</span>
+                </li>
                 <li class="page-item align-self-center mx-3"><span id="currPageDetail">1 z 3</span></li>
-                <li class="page-item"><span class="page-link text-dark" id="nextBtnDetail" role="button">Następna</span></li>
+                <li class="page-item ">
+                    <span class="page-link text-dark" role="button" id="nextBtnDetail" aria-label="Next">&raquo;</span>
+                </li>
             </ul>
         </div>
     </div>
