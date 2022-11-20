@@ -134,6 +134,19 @@
                     <button class="btn btn-sm btn-secondary ms-2" id="resetCalc">Reset</button></li>
             </ul>
         </div>
+        <div class="row align-items-center ms-2 py-3">
+            <div class="col-md-7 col-auto py-2" id="dataSheet">
+                Karta charakterystyki:
+                <span class="fw-bold" >Brak pliku</span>
+                <a href="" class="text-decoration-none text-danger fw-bold s" id="getFile">Pobierz</a>
+            </div>
+            <form class="col-md-5 col-auto" enctype="multipart/form-data" method="post" onsubmit="uploadFile()">
+                <div  class="input-group">
+                    <input class="form-control" type="file" name="uploaded" id="fileupload" />
+                    <button class="btn btn-outline-secondary" type="submit">Prześlij</button>
+                </div>
+            </form>
+        </div>
         <div class="container mt-3 d-flex justify-content-between align-items-end">
             <div class="col-3 col-sm-2 col-md-1">
                 <select class="form-select form-select-sm" id="showPageDetail">
