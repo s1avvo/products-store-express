@@ -250,14 +250,17 @@ getAddDetailFrom.addEventListener('submit',  async (event) => {
 const uploadFile = async () => {
   event.preventDefault();
 
-  const file = document.querySelector('#fileupload');
+  const fileUpload = document.querySelector('#fileupload');
   const formData = new FormData();
-  formData.append('uploaded', file.files[0], `${id}.pdf`);
+  formData.append('uploaded', fileUpload.files[0], `${id}.pdf`);
 
   const res = await fetch('/store/upload', {
     method: 'POST',
     body: formData
   });
+
+  fileUpload.value = '';
+
   alert(await res.text());
 };
 const url = document.querySelector('#getFile');
