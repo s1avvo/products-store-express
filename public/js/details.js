@@ -1,6 +1,7 @@
 const getAddDetailFrom = document.getElementById('addDetailForm');
 const headDetail = document.querySelector('#headDetailProduct').getElementsByTagName('li');
 const detailFilter = document.querySelector('#detailFilterForm');
+const cardName = document.querySelector('#dataSheet');
 
 let id, oneProductData, productDetail, productDetailTable, sortDetailCol;
 let sortDetailAsc = false;
@@ -41,13 +42,20 @@ const getDetailTable = async (id) => {
 
 //Insert product head detail
 const renderDetailHeader = () => {
-  const {name, secondName, amount, unit, place} = oneProductData;
+  const {name, secondName, amount, unit, place, dataSheet} = oneProductData;
 
   headDetail[0].querySelector('span').innerText = name;
   headDetail[1].querySelector('span').innerText = secondName;
   headDetail[2].querySelector('span').innerText = amount+unit;
   headDetail[3].querySelector('span').innerText = place;
   headDetail[4].querySelector('span').innerText = countDetailAmount;
+  if(!dataSheet){
+    cardName.querySelector('span').innerText = `Brak karty charakterystyki`;
+    cardName.querySelector('a').classList.add('displayNone');
+  }else {
+    cardName.querySelector('span').innerText = `${name}.pdf`;
+    cardName.querySelector('a').classList.remove('displayNone');
+  }
 }
 
 //Insert product detail table
@@ -238,6 +246,38 @@ getAddDetailFrom.addEventListener('submit',  async (event) => {
   event.preventDefault();
   await addDetailForm(event, event.submitter.id);
 })
+
+// upload product specyfication
+const uploadFile = async () => {
+  event.preventDefault();
+
+  const file = document.querySelector('#fileupload');
+  const formData = new FormData();
+  formData.append('uploaded', file.files[0], `${id}.pdf`);
+
+  const res = await fetch('/store/upload', {
+    method: 'POST',
+    body: formData
+  });
+  alert(await res.text());
+};
+const url = document.querySelector('#getFile');
+
+// get product specification
+const getFile = async () => {
+  url.setAttribute('href', `/download/${id}.pdf`);
+
+  const res = await fetch(`/download/${id}.pdf`, {
+    method: 'GET'
+  });
+
+  if(res.status === 404){
+    window.location.href = "https://chem-store-express.up.railway.app/";
+    alert(await res.text());
+  }
+};
+
+url.addEventListener('click', getFile);
 
 //Reset detail form
 const resetDetailForm = () => {
