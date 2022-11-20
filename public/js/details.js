@@ -39,7 +39,6 @@ const getDetailTable = async (id) => {
   });
 }
 
-
 //Insert product head detail
 const renderDetailHeader = () => {
   const {name, secondName, amount, unit, place, dataSheet} = oneProductData;
